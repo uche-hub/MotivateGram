@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "61857741717",
+    "project_id": "motivategram",
+    "storage_bucket": "motivategram.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:61857741717:android:d5a043948391152a49d49c",
+        "android_client_info": {
+          "package_name": "blog.motivate.motivate_gram"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "61857741717-o7a28lluoaib4530bjma2o40thc0jln2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD2YXlLCKXOMX92LhPWjDn8NY1PdRCRRxU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "61857741717-o7a28lluoaib4530bjma2o40thc0jln2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
