@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:motivate_gram/widgets/custom_dialog.dart';
 
 class FirstView extends StatelessWidget {
 
@@ -61,7 +62,19 @@ class FirstView extends StatelessWidget {
                       ),
                     ),
                   ),
-                  onPressed: (){},
+                  onPressed: (){
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) => CustomDialog(
+                            title: "Create A Free Account",
+                            description: "With an account, your data will be securely saved, allowing you to access it from multiple devices.",
+                            primaryButtonText: "Create Account",
+                            primaryButtonRoute: "/signUp",
+                            secondaryButtonText: "Maybe Later",
+                            secondaryButtonRoute: "/home"
+                        )
+                    );
+                  },
                 ),
                 SizedBox(height: _height * 0.05),
                 FlatButton(
