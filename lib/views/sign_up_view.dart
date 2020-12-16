@@ -21,7 +21,7 @@ class _SignUpViewState extends State<SignUpView> {
   _SignUpViewState({this.authFormType});
 
   final formKey = GlobalKey<FormState>();
-  String _email, _password, _name;
+  String _email, _password, _name, _error;
 
   void swichFormState(String state) {
     formKey.currentState.reset();
@@ -36,22 +36,37 @@ class _SignUpViewState extends State<SignUpView> {
     }
   }
 
-  void submit() async{
+  bool validate() {
     final form = formKey.currentState;
     form.save();
-    try{
-      final auth = Provider.of(context).auth;
-      if(authFormType == AuthFormType.signIn){
-        String uid = await auth.signWithEmailAndPassword(_email, _password);
-        print("Signed In with ID $uid");
-        Navigator.of(context).pushReplacementNamed('/home');
-      }else{
-        String uid = await auth.createUserWithEmailAndPassword(_email, _password, _name);
-        print("Signed Up with New ID $uid");
-        Navigator.of(context).pushReplacementNamed('/home');
+    if(form.validate()){
+      form.save();
+      return true;
+    }
+    else{
+      return false;
+    }
+  }
+
+  void submit() async{
+    if(validate()){
+      try{
+        final auth = Provider.of(context).auth;
+        if(authFormType == AuthFormType.signIn){
+          String uid = await auth.signWithEmailAndPassword(_email, _password);
+          print("Signed In with ID $uid");
+          Navigator.of(context).pushReplacementNamed('/home');
+        }else{
+          String uid = await auth.createUserWithEmailAndPassword(_email, _password, _name);
+          print("Signed Up with New ID $uid");
+          Navigator.of(context).pushReplacementNamed('/home');
+        }
+      }catch(e){
+        setState(() {
+          _error = e.message;
+        });
+        print(e);
       }
-    }catch(e){
-      print(e);
     }
   }
 
@@ -61,37 +76,84 @@ class _SignUpViewState extends State<SignUpView> {
     final _height = MediaQuery.of(context).size.height;
 
     return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-            color: const Color(0xff000000),
-            image: DecorationImage(
-                image: AssetImage("assets/images/thought.jpg"),
-                colorFilter: ColorFilter.mode(Colors.black.withOpacity(.5), BlendMode.dstATop),
-                fit: BoxFit.cover
-            )
-        ),
-        height: MediaQuery.of(context).size.height,
-        width: _width,
-        child: SafeArea(
-          child: Column(
-            children: [
-              SizedBox(height: _height * 0.05,),
-              buildHeaderText(),
-              SizedBox(height: _height * 0.05,),
-              Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Form(
-                  key: formKey,
-                  child: Column(
-                    children: buildInputs() + buildButtons(),
-                  ),
-                ),
+      body: SingleChildScrollView(
+        child: Container(
+          decoration: BoxDecoration(
+              color: const Color(0xff000000),
+              image: DecorationImage(
+                  image: AssetImage("assets/images/thought.jpg"),
+                  colorFilter: ColorFilter.mode(Colors.black.withOpacity(.5), BlendMode.dstATop),
+                  fit: BoxFit.cover
               )
-            ],
+          ),
+          height: MediaQuery.of(context).size.height,
+          width: _width,
+          child: SafeArea(
+            child: Column(
+              children: [
+                SizedBox(height: _height * 0.025,),
+                showAlert(),
+                SizedBox(height: _height * 0.025,),
+                buildHeaderText(),
+                SizedBox(height: _height * 0.05,),
+                Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Form(
+                    key: formKey,
+                    child: Column(
+                      children: buildInputs() + buildButtons(),
+                    ),
+                  ),
+                )
+              ],
+            ),
           ),
         ),
       ),
     );
+  }
+  
+  Widget showAlert() {
+    if(_error != null){
+      return Container(
+        color: Colors.black.withOpacity(.5),
+        width: double.infinity,
+        padding: EdgeInsets.all(8.0),
+        child: Row(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child: Icon(
+                Icons.error_outline,
+                color: Colors.white,
+              ),
+            ),
+            Expanded(
+              child: AutoSizeText(
+                _error,
+                maxLines: 3,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontFamily: 'Langar'
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 8.0),
+              child: IconButton(
+                icon: Icon(Icons.close, color: Colors.white,),
+                onPressed: (){
+                  setState(() {
+                    _error = null;
+                  });
+                },
+              ),
+            )
+          ],
+        ),
+      );
+    }
+    return SizedBox(height: 0,);
   }
 
   AutoSizeText buildHeaderText() {
@@ -120,6 +182,7 @@ class _SignUpViewState extends State<SignUpView> {
     if(authFormType == AuthFormType.signUp){
       textFields.add(
           TextFormField(
+            validator: NameValidator.validate,
             style: TextStyle(
                 fontSize: 22.0,
                 fontFamily: 'Langar'
@@ -134,6 +197,7 @@ class _SignUpViewState extends State<SignUpView> {
     /// Add Email & Password
     textFields.add(
       TextFormField(
+        validator: EmailValidator.validate,
         style: TextStyle(
           fontSize: 22.0,
           fontFamily: 'Langar'
@@ -147,6 +211,7 @@ class _SignUpViewState extends State<SignUpView> {
 
     textFields.add(
         TextFormField(
+          validator: PasswordValidator.validate,
           style: TextStyle(
               fontSize: 22.0,
               fontFamily: 'Langar'
