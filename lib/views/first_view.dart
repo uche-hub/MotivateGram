@@ -86,7 +86,9 @@ class FirstView extends StatelessWidget {
                       fontFamily: 'Langar',
                     ),
                   ),
-                  onPressed: (){},
+                  onPressed: (){
+                    Navigator.of(context).pushReplacementNamed("/signIn");
+                  },
                 )
               ],
             ),
