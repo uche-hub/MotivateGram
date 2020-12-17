@@ -3,6 +3,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:motivate_gram/main.dart';
 import 'package:motivate_gram/servies/auth_service.dart';
 import 'package:motivate_gram/widgets/provider_widget.dart';
+import 'package:flutter_auth_buttons/flutter_auth_buttons.dart';
 
 enum AuthFormType {
   signIn, signUp, reset
@@ -112,7 +113,7 @@ class _SignUpViewState extends State<SignUpView> {
                       children: buildInputs() + buildButtons(),
                     ),
                   ),
-                )
+                ),
               ],
             ),
           ),
@@ -272,6 +273,8 @@ class _SignUpViewState extends State<SignUpView> {
   List<Widget> buildButtons() {
     String _swichButton, _newFormState, _submitButtonText;
     bool _showForgotPassword = false;
+    bool _showSocial = true;
+
     if (authFormType == AuthFormType.signIn) {
       _swichButton = "Create New Account";
       _newFormState = "signUp";
@@ -281,6 +284,7 @@ class _SignUpViewState extends State<SignUpView> {
       _swichButton = "Return to Sign In";
       _newFormState = "signIn";
       _submitButtonText = "Submit";
+      _showSocial = false;
     }
     else{
       _swichButton = "Have an account? Sign In";
@@ -318,7 +322,8 @@ class _SignUpViewState extends State<SignUpView> {
         onPressed: () {
           swichFormState(_newFormState);
         },
-      )
+      ),
+      buildSocialIcons(_showSocial),
     ];
   }
 
@@ -337,6 +342,33 @@ class _SignUpViewState extends State<SignUpView> {
             authFormType = AuthFormType.reset;
           });
         },
+      ),
+      visible: visible,
+    );
+  }
+
+  Widget buildSocialIcons(bool visible) {
+    final _auth = Provider.of(context).auth;
+    return Visibility(
+      child: Column(
+        children: [
+          Divider(
+            color: Colors.white,
+          ),
+          SizedBox(height: 10,),
+          GoogleSignInButton(
+            onPressed: () async{
+              try{
+                await _auth.signInWithGoogle();
+                Navigator.of(context).pushReplacementNamed('/home');
+              }catch(e){
+                setState(() {
+                  _warning = e.message;
+                });
+              }
+            },
+          )
+        ],
       ),
       visible: visible,
     );
