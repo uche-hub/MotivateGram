@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:motivate_gram/servies/auth_service.dart';
 import 'package:motivate_gram/views/first_view.dart';
 import 'package:motivate_gram/views/home_view.dart';
+import 'package:motivate_gram/views/sideBar/sidebar_layout.dart';
 import 'package:motivate_gram/views/sign_up_view.dart';
 import 'package:motivate_gram/widgets/provider_widget.dart';
 
@@ -28,7 +29,7 @@ class MyApp extends StatelessWidget {
         routes: <String, WidgetBuilder>{
           '/signUp': (BuildContext context) => SignUpView(authFormType: AuthFormType.signUp,),
           '/signIn': (BuildContext context) => SignUpView(authFormType: AuthFormType.signIn,),
-          '/home': (BuildContext context) => HomeController(),
+          '/homePage': (BuildContext context) => HomeController(),
         },
       ),
     );
@@ -44,7 +45,7 @@ class HomeController extends StatelessWidget {
       builder: (context, AsyncSnapshot<String> snapshot){
         if(snapshot.connectionState == ConnectionState.active){
           final bool signedIn = snapshot.hasData;
-          return signedIn ? Home() : FirstView();
+          return signedIn ? SideBarLayout() : FirstView();
         }
         return CircularProgressIndicator();
       },
