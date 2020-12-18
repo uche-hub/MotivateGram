@@ -4,6 +4,7 @@ import 'package:motivate_gram/main.dart';
 import 'package:motivate_gram/servies/auth_service.dart';
 import 'package:motivate_gram/widgets/provider_widget.dart';
 import 'package:flutter_auth_buttons/flutter_auth_buttons.dart';
+import 'package:motivate_gram/widgets/verify_dialog.dart';
 
 enum AuthFormType {
   signIn, signUp, reset
@@ -56,7 +57,7 @@ class _SignUpViewState extends State<SignUpView> {
         if(authFormType == AuthFormType.signIn){
           String uid = await auth.signWithEmailAndPassword(_email, _password);
           print("Signed In with ID $uid");
-          Navigator.of(context).pushReplacementNamed('/home');
+          Navigator.of(context).pushReplacementNamed('/homePage');
         }else if(authFormType == AuthFormType.reset) {
           await auth.sendPasswordResetEmail(_email);
           print("Password reset email sent");
@@ -68,7 +69,11 @@ class _SignUpViewState extends State<SignUpView> {
         else{
           String uid = await auth.createUserWithEmailAndPassword(_email, _password, _name);
           print("Signed Up with New ID $uid");
-          Navigator.of(context).pushReplacementNamed('/home');
+          showDialog(
+            context: context,
+            builder: (BuildContext context) => VerifyDialog()
+          );
+          // Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => VerifyDialog()));
         }
       }catch(e){
         setState(() {
@@ -360,7 +365,11 @@ class _SignUpViewState extends State<SignUpView> {
             onPressed: () async{
               try{
                 await _auth.signInWithGoogle();
-                Navigator.of(context).pushReplacementNamed('/home');
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) => VerifyDialog()
+                );
+                // Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => VerifyDialog()));
               }catch(e){
                 setState(() {
                   _warning = e.message;

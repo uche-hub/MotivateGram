@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class AuthService{
@@ -39,6 +40,29 @@ class AuthService{
   Future sendPasswordResetEmail(String email) async{
     return _firebaseAuth.sendPasswordResetEmail(email: email);
   }
+
+  /// Get Profile Image
+  getProfileImage() {
+    if(_firebaseAuth.currentUser.photoURL != null){
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(50.0),
+          child: Image.network(_firebaseAuth.currentUser.photoURL,));
+    }
+  }
+
+  getProfileName() {
+    if(_firebaseAuth.currentUser.displayName != null){
+      return _firebaseAuth.currentUser.displayName;
+    }
+  }
+
+  getProfileEmail() {
+    if(_firebaseAuth.currentUser.email != null){
+      return _firebaseAuth.currentUser.email;
+    }
+  }
+
+
 
   /// Google
   Future<String> signInWithGoogle() async{

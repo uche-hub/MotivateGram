@@ -6,6 +6,7 @@ import 'package:motivate_gram/views/home_view.dart';
 import 'package:motivate_gram/views/sideBar/sidebar_layout.dart';
 import 'package:motivate_gram/views/sign_up_view.dart';
 import 'package:motivate_gram/widgets/provider_widget.dart';
+import 'package:motivate_gram/widgets/verify_dialog.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
@@ -30,6 +31,7 @@ class MyApp extends StatelessWidget {
           '/signUp': (BuildContext context) => SignUpView(authFormType: AuthFormType.signUp,),
           '/signIn': (BuildContext context) => SignUpView(authFormType: AuthFormType.signIn,),
           '/homePage': (BuildContext context) => HomeController(),
+          'verifyDialog': (BuildContext context) => VerifyDialog()
         },
       ),
     );

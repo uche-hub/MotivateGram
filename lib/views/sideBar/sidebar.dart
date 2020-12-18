@@ -1,6 +1,9 @@
 import 'dart:async';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:motivate_gram/views/sideBar/meun_item.dart';
+import 'package:motivate_gram/widgets/provider_widget.dart';
 import 'package:rxdart/rxdart.dart';
 
 class SideBar extends StatefulWidget {
@@ -59,15 +62,76 @@ class _SideBarState extends State<SideBar> with SingleTickerProviderStateMixin<S
           duration: _animationDuration,
           top: 0,
           bottom: 0,
-          left: isSideBarOpenedAsync.data ? 0 : 0,
+          left: isSideBarOpenedAsync.data ? 0 : -screenWidth,
           right: isSideBarOpenedAsync.data ? 0 : screenWidth - 45,
           child: Row(
             children: [
               Expanded(
                 child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
                   color: Colors.green,
-                  child: Column(
-
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 10.0),
+                    child: Column(
+                      children: [
+                        SizedBox(
+                          height: 100,
+                        ),
+                        ListTile(
+                          title: Text(
+                            Provider.of(context).auth.getProfileName(),
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 30,
+                              fontFamily: 'Langar'
+                            ),
+                          ),
+                          subtitle: AutoSizeText(
+                            Provider.of(context).auth.getProfileEmail(),
+                            maxLines: 1,
+                            style: TextStyle(
+                              color: Colors.greenAccent,
+                              fontSize: 20,
+                              fontFamily: 'Langar'
+                            ),
+                          ),
+                          leading: CircleAvatar(
+                            child: Provider.of(context).auth.getProfileImage(),
+                            radius: 40,
+                          ),
+                        ),
+                        Divider(
+                          height: 64,
+                          thickness: 0.5,
+                          color: Colors.white.withOpacity(0.3),
+                          indent: 32,
+                          endIndent: 32,
+                        ),
+                        MenuItem(
+                          icon: Icons.home,
+                          title: "Home",
+                        ),
+                        MenuItem(
+                          icon: Icons.person,
+                          title: "My Profile",
+                        ),
+                        Divider(
+                          height: 64,
+                          thickness: 0.5,
+                          color: Colors.white.withOpacity(0.3),
+                          indent: 32,
+                          endIndent: 32,
+                        ),
+                        MenuItem(
+                          icon: Icons.question_answer,
+                          title: "About",
+                        ),
+                        MenuItem(
+                          icon: Icons.logout,
+                          title: "LogOut",
+                        )
+                      ],
+                    ),
                   ),
                 ),
               ),
