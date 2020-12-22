@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:motivate_gram/bloc/navigation_bloc/navigation_bloc.dart';
 
-class ProfilePage extends StatelessWidget {
+class ProfilePage extends StatelessWidget with NavigationStates{
   @override
   Widget build(BuildContext context) {
     return Center(

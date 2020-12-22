@@ -2,7 +2,10 @@ import 'dart:async';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:motivate_gram/bloc/navigation_bloc/navigation_bloc.dart';
 import 'package:motivate_gram/views/sideBar/meun_item.dart';
+import 'package:motivate_gram/views/sidePage/homepage.dart';
 import 'package:motivate_gram/widgets/provider_widget.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -69,7 +72,7 @@ class _SideBarState extends State<SideBar> with SingleTickerProviderStateMixin<S
               Expanded(
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
-                  color: Colors.green,
+                  color: Colors.greenAccent,
                   child: Padding(
                     padding: const EdgeInsets.only(top: 10.0),
                     child: Column(
@@ -90,7 +93,7 @@ class _SideBarState extends State<SideBar> with SingleTickerProviderStateMixin<S
                             Provider.of(context).auth.getProfileEmail(),
                             maxLines: 1,
                             style: TextStyle(
-                              color: Colors.greenAccent,
+                              color: Colors.white,
                               fontSize: 20,
                               fontFamily: 'Langar'
                             ),
@@ -110,10 +113,18 @@ class _SideBarState extends State<SideBar> with SingleTickerProviderStateMixin<S
                         MenuItem(
                           icon: Icons.home,
                           title: "Home",
+                          onTap: () {
+                            onIconPressed();
+                            BlocProvider.of<NavigationBloc>(context).add(NavigationEvents.HomePageClickedEvent);
+                          },
                         ),
                         MenuItem(
                           icon: Icons.person,
                           title: "My Profile",
+                          onTap: () {
+                            onIconPressed();
+                            BlocProvider.of<NavigationBloc>(context).add(NavigationEvents.MyProfileClickedEvent);
+                          },
                         ),
                         Divider(
                           height: 64,
@@ -125,11 +136,11 @@ class _SideBarState extends State<SideBar> with SingleTickerProviderStateMixin<S
                         MenuItem(
                           icon: Icons.question_answer,
                           title: "About",
+                          onTap: () {
+                            onIconPressed();
+                            BlocProvider.of<NavigationBloc>(context).add(NavigationEvents.AboutClickedEvent);
+                          },
                         ),
-                        MenuItem(
-                          icon: Icons.logout,
-                          title: "LogOut",
-                        )
                       ],
                     ),
                   ),
@@ -141,16 +152,19 @@ class _SideBarState extends State<SideBar> with SingleTickerProviderStateMixin<S
                   onTap: () {
                     onIconPressed();
                   },
-                  child: Container(
-                    width: 35,
-                    height: 110,
-                    color: Colors.green,
-                    alignment: Alignment.centerLeft,
-                    child: AnimatedIcon(
-                      progress: _animationController.view,
-                      icon: AnimatedIcons.menu_arrow,
+                  child: ClipPath(
+                    clipper: CustomMenuClipper(),
+                    child: Container(
+                      width: 35,
+                      height: 110,
                       color: Colors.greenAccent,
-                      size: 25,
+                      alignment: Alignment.centerLeft,
+                      child: AnimatedIcon(
+                        progress: _animationController.view,
+                        icon: AnimatedIcons.menu_arrow,
+                        color: Colors.white,
+                        size: 25,
+                      ),
                     ),
                   ),
                 ),
@@ -161,4 +175,31 @@ class _SideBarState extends State<SideBar> with SingleTickerProviderStateMixin<S
       },
     );
   }
+}
+
+class CustomMenuClipper extends CustomClipper<Path>{
+  @override
+  Path getClip(Size size) {
+    Paint paint = Paint();
+    paint.color = Colors.white;
+
+    final width = size.width;
+    final height = size.height;
+
+    Path path = Path();
+    path.moveTo(0, 0);
+    path.quadraticBezierTo(0, 8, 10, 16);
+    path.quadraticBezierTo(width - 1, height / 2 - 20, width, height / 2);
+    path.quadraticBezierTo(width + 1, height / 2 + 20, 10, height - 16);
+    path.quadraticBezierTo(0, height - 8, 0, height);
+    path.close();
+    
+    return path;
+  }
+
+  @override
+  bool shouldReclip(CustomClipper<Path> oldClipper) {
+    return true;
+  }
+
 }

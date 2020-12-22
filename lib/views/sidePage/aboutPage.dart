@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:motivate_gram/bloc/navigation_bloc/navigation_bloc.dart';
 
-class HomePage extends StatelessWidget with NavigationStates{
+class AboutPage extends StatelessWidget with NavigationStates{
   @override
   Widget build(BuildContext context) {
     return Center(
       child: Container(
-        child: Text("Home Page", style: TextStyle(
-          fontFamily: 'Langar',
-          fontWeight: FontWeight.w900,
-          fontSize: 28
+        child: Text("About Us Page", style: TextStyle(
+            fontFamily: 'Langar',
+            fontWeight: FontWeight.w900,
+            fontSize: 28
         ),),
       ),
     );
