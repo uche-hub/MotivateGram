@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -73,6 +74,17 @@ class AuthService{
       accessToken: _googlgAuth.accessToken
     );
     return (await _firebaseAuth.signInWithCredential(credential)).user.uid;
+  }
+
+  Future<void> userSetup() async{
+    CollectionReference users = FirebaseFirestore.instance.collection('Users');
+    String uid = _firebaseAuth.currentUser.uid.toString();
+    String name = _firebaseAuth.currentUser.displayName.toString();
+    users.add({
+      'displayName': name,
+      'uid': uid
+    });
+    return;
   }
 }
 

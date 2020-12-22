@@ -71,8 +71,9 @@ class _SignUpViewState extends State<SignUpView> {
           print("Signed Up with New ID $uid");
           showDialog(
             context: context,
-            builder: (BuildContext context) => VerifyDialog()
+            builder: (BuildContext context) => VerifyDialog(),
           );
+          auth.userSetup();
           // Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => VerifyDialog()));
         }
       }catch(e){
