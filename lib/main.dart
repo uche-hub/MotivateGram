@@ -2,7 +2,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:motivate_gram/servies/auth_service.dart';
 import 'package:motivate_gram/views/first_view.dart';
-import 'package:motivate_gram/views/home_view.dart';
 import 'package:motivate_gram/views/sideBar/sidebar_layout.dart';
 import 'package:motivate_gram/views/sign_up_view.dart';
 import 'package:motivate_gram/widgets/provider_widget.dart';
@@ -23,9 +22,7 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'MotivateGram',
         debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          visualDensity: VisualDensity.adaptivePlatformDensity,
-        ),
+        theme: ThemeData.dark(),
         home: HomeController(),
         routes: <String, WidgetBuilder>{
           '/signUp': (BuildContext context) => SignUpView(authFormType: AuthFormType.signUp,),

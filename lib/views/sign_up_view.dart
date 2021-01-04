@@ -202,6 +202,7 @@ class _SignUpViewState extends State<SignUpView> {
             validator: EmailValidator.validate,
             style: TextStyle(
                 fontSize: 22.0,
+                color: Colors.black45,
                 fontFamily: 'Langar'
             ),
             decoration: buildSignUpInputDecoration("Email"),
@@ -219,6 +220,7 @@ class _SignUpViewState extends State<SignUpView> {
             validator: NameValidator.validate,
             style: TextStyle(
                 fontSize: 22.0,
+                color: Colors.black,
                 fontFamily: 'Langar'
             ),
             decoration: buildSignUpInputDecoration("Name"),
@@ -234,6 +236,7 @@ class _SignUpViewState extends State<SignUpView> {
         validator: EmailValidator.validate,
         style: TextStyle(
           fontSize: 22.0,
+            color: Colors.black,
           fontFamily: 'Langar'
         ),
         decoration: buildSignUpInputDecoration("Email"),
@@ -248,6 +251,7 @@ class _SignUpViewState extends State<SignUpView> {
           validator: PasswordValidator.validate,
           style: TextStyle(
               fontSize: 22.0,
+              color: Colors.black,
               fontFamily: 'Langar'
           ),
           decoration: buildSignUpInputDecoration("Password"),
@@ -264,7 +268,7 @@ class _SignUpViewState extends State<SignUpView> {
     return InputDecoration(
         hintText: hint,
         filled: true,
-        fillColor: Colors.white,
+        fillColor: Colors.white24,
         focusColor: Colors.white,
         enabledBorder: OutlineInputBorder(
             borderSide: BorderSide(
@@ -370,6 +374,7 @@ class _SignUpViewState extends State<SignUpView> {
                   context: context,
                   builder: (BuildContext context) => VerifyDialog()
                 );
+                _auth.userSetup();
                 // Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => VerifyDialog()));
               }catch(e){
                 setState(() {

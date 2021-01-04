@@ -70,78 +70,105 @@ class _SideBarState extends State<SideBar> with SingleTickerProviderStateMixin<S
           child: Row(
             children: [
               Expanded(
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  color: Colors.greenAccent,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 10.0),
-                    child: Column(
-                      children: [
-                        SizedBox(
-                          height: 100,
-                        ),
-                        ListTile(
-                          title: Text(
-                            Provider.of(context).auth.getProfileName(),
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 30,
-                              fontFamily: 'Langar'
+                child: SingleChildScrollView(
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    color: Colors.white,
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: 300.0),
+                      child: Column(
+                        children: [
+                          SizedBox(
+                            height: 58,
+                          ),
+                          ListTile(
+                            title: AutoSizeText(
+                              Provider.of(context).auth.getProfileName(),
+                              maxLines: 1,
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 30,
+                                  fontFamily: 'Langar'
+                              ),
+                            ),
+                            subtitle: AutoSizeText(
+                              Provider.of(context).auth.getProfileEmail(),
+                              maxLines: 1,
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 20,
+                                  fontFamily: 'Langar'
+                              ),
+                            ),
+                            leading: CircleAvatar(
+                              child: Provider.of(context).auth.getProfileImage(),
+                              radius: 40,
                             ),
                           ),
-                          subtitle: AutoSizeText(
-                            Provider.of(context).auth.getProfileEmail(),
-                            maxLines: 1,
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 20,
-                              fontFamily: 'Langar'
-                            ),
+                          Divider(
+                            height: 64,
+                            thickness: 0.5,
+                            color: Colors.white.withOpacity(0.3),
+                            indent: 32,
+                            endIndent: 32,
                           ),
-                          leading: CircleAvatar(
-                            child: Provider.of(context).auth.getProfileImage(),
-                            radius: 40,
+                          MenuItem(
+                            icon: Icons.home_outlined,
+                            title: "Home",
+                            onTap: () {
+                              onIconPressed();
+                              BlocProvider.of<NavigationBloc>(context).add(NavigationEvents.HomePageClickedEvent);
+                            },
                           ),
-                        ),
-                        Divider(
-                          height: 64,
-                          thickness: 0.5,
-                          color: Colors.white.withOpacity(0.3),
-                          indent: 32,
-                          endIndent: 32,
-                        ),
-                        MenuItem(
-                          icon: Icons.home,
-                          title: "Home",
-                          onTap: () {
-                            onIconPressed();
-                            BlocProvider.of<NavigationBloc>(context).add(NavigationEvents.HomePageClickedEvent);
-                          },
-                        ),
-                        MenuItem(
-                          icon: Icons.person,
-                          title: "My Profile",
-                          onTap: () {
-                            onIconPressed();
-                            BlocProvider.of<NavigationBloc>(context).add(NavigationEvents.MyProfileClickedEvent);
-                          },
-                        ),
-                        Divider(
-                          height: 64,
-                          thickness: 0.5,
-                          color: Colors.white.withOpacity(0.3),
-                          indent: 32,
-                          endIndent: 32,
-                        ),
-                        MenuItem(
-                          icon: Icons.question_answer,
-                          title: "About",
-                          onTap: () {
-                            onIconPressed();
-                            BlocProvider.of<NavigationBloc>(context).add(NavigationEvents.AboutClickedEvent);
-                          },
-                        ),
-                      ],
+                          MenuItem(
+                            icon: Icons.person_outline,
+                            title: "My Profile",
+                            onTap: () {
+                              onIconPressed();
+                              BlocProvider.of<NavigationBloc>(context).add(NavigationEvents.MyProfileClickedEvent);
+                            },
+                          ),
+                          MenuItem(
+                            icon: Icons.chat_outlined,
+                            title: "Chat Room",
+                            onTap: () {
+                              onIconPressed();
+                              BlocProvider.of<NavigationBloc>(context).add(NavigationEvents.ChatRoomClickedEvent);
+                            },
+                          ),
+                          Divider(
+                            height: 64,
+                            thickness: 0.5,
+                            color: Colors.white.withOpacity(0.3),
+                            indent: 32,
+                            endIndent: 32,
+                          ),
+                          MenuItem(
+                            icon: Icons.settings_outlined,
+                            title: "Setting",
+                            onTap: () {
+                              onIconPressed();
+                              BlocProvider.of<NavigationBloc>(context).add(NavigationEvents.SettingClickedEvent);
+                            },
+                          ),
+                          MenuItem(
+                            icon: Icons.question_answer_outlined,
+                            title: "About",
+                            onTap: () {
+                              onIconPressed();
+                              BlocProvider.of<NavigationBloc>(context).add(NavigationEvents.AboutClickedEvent);
+                            },
+                          ),
+                          MenuItem(
+                            icon: Icons.help_outline,
+                            title: "Help",
+                            onTap: () {
+                              onIconPressed();
+                              BlocProvider.of<NavigationBloc>(context).add(NavigationEvents.HelpClickedEvent);
+                            },
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -157,12 +184,12 @@ class _SideBarState extends State<SideBar> with SingleTickerProviderStateMixin<S
                     child: Container(
                       width: 35,
                       height: 110,
-                      color: Colors.greenAccent,
+                      color: Colors.white,
                       alignment: Alignment.centerLeft,
                       child: AnimatedIcon(
                         progress: _animationController.view,
                         icon: AnimatedIcons.menu_arrow,
-                        color: Colors.white,
+                        color: Colors.black,
                         size: 25,
                       ),
                     ),
