@@ -84,7 +84,7 @@ class _CreateBlogState extends State<CreateBlog> {
                   fontSize: 22,
                   fontFamily: 'Langar',
                   fontWeight: FontWeight.w900,
-                  color: Colors.greenAccent
+                  color: Color(0xffc41a78)
               ),
             )
           ],
@@ -99,7 +99,8 @@ class _CreateBlogState extends State<CreateBlog> {
             child: Container(
               padding: EdgeInsets.symmetric(horizontal: 20),
               child: Icon(
-                  Icons.file_upload
+                  Icons.file_upload,
+                color: Color(0xffc41a78),
               ),
             ),
           ),
@@ -135,7 +136,7 @@ class _CreateBlogState extends State<CreateBlog> {
                   width: MediaQuery.of(context).size.width,
                   child: Icon(
                     Icons.add_a_photo,
-                    color: Colors.black45,
+                    color: Color(0xffc41a78),
                   ),
                 ),
               ),

@@ -57,6 +57,12 @@ class AuthService{
     }
   }
 
+  getUserId() {
+    if(_firebaseAuth.currentUser.uid != null){
+      return _firebaseAuth.currentUser.uid;
+    }
+  }
+
   getProfileEmail() {
     if(_firebaseAuth.currentUser.email != null){
       return _firebaseAuth.currentUser.email;
@@ -76,7 +82,7 @@ class AuthService{
     return (await _firebaseAuth.signInWithCredential(credential)).user.uid;
   }
 
-  Future<void> userSetup() async{
+  userSetup() async{
     CollectionReference users = FirebaseFirestore.instance.collection('Users');
     String uid = _firebaseAuth.currentUser.uid.toString();
     String name = _firebaseAuth.currentUser.displayName.toString();

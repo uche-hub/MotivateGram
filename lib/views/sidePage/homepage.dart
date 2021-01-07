@@ -88,7 +88,7 @@ class _HomePageState extends State<HomePage> {
                   fontSize: 22,
                   fontFamily: 'Langar',
                   fontWeight: FontWeight.w900,
-                  color: Colors.greenAccent
+                  color: Color(0xffc41a78)
               ),
             )
           ],
@@ -103,13 +103,15 @@ class _HomePageState extends State<HomePage> {
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             FloatingActionButton(
+              backgroundColor: Color(0xffc41a78),
               onPressed: (){
                 Navigator.push(context, MaterialPageRoute(
                     builder: (context) => CreateBlog()
                 ));
               },
               child: Icon(
-                  Icons.add
+                  Icons.add,
+                color: Colors.white,
               ),
             )
           ],

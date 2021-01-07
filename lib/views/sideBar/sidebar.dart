@@ -73,7 +73,7 @@ class _SideBarState extends State<SideBar> with SingleTickerProviderStateMixin<S
                 child: SingleChildScrollView(
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
-                    color: Colors.white,
+                    color: Color(0xff2c2b2c),
                     child: Padding(
                       padding: const EdgeInsets.only(bottom: 300.0),
                       child: Column(
@@ -86,7 +86,7 @@ class _SideBarState extends State<SideBar> with SingleTickerProviderStateMixin<S
                               Provider.of(context).auth.getProfileName(),
                               maxLines: 1,
                               style: TextStyle(
-                                  color: Colors.black,
+                                  color: Colors.white,
                                   fontSize: 30,
                                   fontFamily: 'Langar'
                               ),
@@ -95,7 +95,7 @@ class _SideBarState extends State<SideBar> with SingleTickerProviderStateMixin<S
                               Provider.of(context).auth.getProfileEmail(),
                               maxLines: 1,
                               style: TextStyle(
-                                  color: Colors.black,
+                                  color: Colors.white,
                                   fontSize: 20,
                                   fontFamily: 'Langar'
                               ),
@@ -184,12 +184,12 @@ class _SideBarState extends State<SideBar> with SingleTickerProviderStateMixin<S
                     child: Container(
                       width: 35,
                       height: 110,
-                      color: Colors.white,
+                      color: Color(0xff2c2b2c),
                       alignment: Alignment.centerLeft,
                       child: AnimatedIcon(
                         progress: _animationController.view,
                         icon: AnimatedIcons.menu_arrow,
-                        color: Colors.black,
+                        color: Color(0xffc41a78),
                         size: 25,
                       ),
                     ),
