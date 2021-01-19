@@ -1,11 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:motivate_gram/servies/auth_service.dart';
-import 'package:motivate_gram/views/first_view.dart';
-import 'package:motivate_gram/views/sideBar/sidebar_layout.dart';
-import 'package:motivate_gram/views/sign_up_view.dart';
-import 'package:motivate_gram/widgets/provider_widget.dart';
-import 'package:motivate_gram/widgets/verify_dialog.dart';
+import 'package:motivate_gram/resouces/firebase_repository.dart';
+import 'package:motivate_gram/screens/login_screen.dart';
+import 'package:motivate_gram/sidePages/homepage.dart';
+import 'package:motivate_gram/sidebar/sidebar_layout.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
@@ -14,40 +13,23 @@ void main() async{
 }
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
+  FirebaseRepository _repository = FirebaseRepository();
   @override
   Widget build(BuildContext context) {
-    return Provider(
-      auth: AuthService(),
-      child: MaterialApp(
+    return MaterialApp(
         title: 'MotivateGram',
         debugShowCheckedModeBanner: false,
         theme: ThemeData.dark(),
-        home: HomeController(),
-        routes: <String, WidgetBuilder>{
-          '/signUp': (BuildContext context) => SignUpView(authFormType: AuthFormType.signUp,),
-          '/signIn': (BuildContext context) => SignUpView(authFormType: AuthFormType.signIn,),
-          '/homePage': (BuildContext context) => HomeController(),
-          'verifyDialog': (BuildContext context) => VerifyDialog()
-        },
-      ),
-    );
-  }
-}
-
-class HomeController extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    final AuthService auth = Provider.of(context).auth;
-    return StreamBuilder<String>(
-      stream: auth.onAuthStateChanged,
-      builder: (context, AsyncSnapshot<String> snapshot){
-        if(snapshot.connectionState == ConnectionState.active){
-          final bool signedIn = snapshot.hasData;
-          return signedIn ? SideBarLayout() : FirstView();
-        }
-        return CircularProgressIndicator();
-      },
-    );
+        home: FutureBuilder(
+          future: _repository.getCurrentUser(),
+          builder: (context, AsyncSnapshot<User> snapshot) {
+            if(snapshot.hasData){
+              return SideBarLayout();
+            }else{
+              return LoginPage();
+            }
+          },
+        ),
+      );
   }
 }

@@ -3,10 +3,9 @@ import 'dart:async';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:motivate_gram/bloc/navigation_bloc/navigation_bloc.dart';
-import 'package:motivate_gram/views/sideBar/meun_item.dart';
-import 'package:motivate_gram/views/sidePage/homepage.dart';
-import 'package:motivate_gram/widgets/provider_widget.dart';
+import 'package:motivate_gram/navigationBloc/navigation_bloc.dart';
+import 'package:motivate_gram/resouces/firebase_repository.dart';
+import 'package:motivate_gram/sidebar/meun_items.dart';
 import 'package:rxdart/rxdart.dart';
 
 class SideBar extends StatefulWidget {
@@ -21,6 +20,8 @@ class _SideBarState extends State<SideBar> with SingleTickerProviderStateMixin<S
   StreamSink<bool> isSidebarOpenedSink;
   final _animationDuration = const Duration(milliseconds: 500);
 
+  FirebaseRepository _repository = FirebaseRepository();
+
   @override
   void initState() {
     // TODO: implement initState
@@ -33,7 +34,6 @@ class _SideBarState extends State<SideBar> with SingleTickerProviderStateMixin<S
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
     _animationController.dispose();
     isSidebarOpenedStreamController.close();
@@ -44,7 +44,7 @@ class _SideBarState extends State<SideBar> with SingleTickerProviderStateMixin<S
     final animationStatus = _animationController.status;
     final isAnimationCompleted = animationStatus == AnimationStatus.completed;
 
-    if(isAnimationCompleted){
+    if(isAnimationCompleted) {
       isSidebarOpenedSink.add(false);
       _animationController.reverse();
     }else{
@@ -60,22 +60,22 @@ class _SideBarState extends State<SideBar> with SingleTickerProviderStateMixin<S
     return StreamBuilder<bool>(
       initialData: false,
       stream: isSidebarOpenedStream,
-      builder: (context, isSideBarOpenedAsync) {
+      builder: (context, isSidebarOpenedAsync) {
         return AnimatedPositioned(
           duration: _animationDuration,
           top: 0,
           bottom: 0,
-          left: isSideBarOpenedAsync.data ? 0 : -screenWidth,
-          right: isSideBarOpenedAsync.data ? 0 : screenWidth - 45,
+          left: isSidebarOpenedAsync.data ? 0 : -screenWidth,
+          right: isSidebarOpenedAsync.data ? 0 : screenWidth - 45,
           child: Row(
             children: [
               Expanded(
                 child: SingleChildScrollView(
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
-                    color: Color(0xff2c2b2c),
+                    color: Color(0xff222222),
                     child: Padding(
-                      padding: const EdgeInsets.only(bottom: 300.0),
+                      padding: const EdgeInsets.only(bottom: 100.0),
                       child: Column(
                         children: [
                           SizedBox(
@@ -83,32 +83,36 @@ class _SideBarState extends State<SideBar> with SingleTickerProviderStateMixin<S
                           ),
                           ListTile(
                             title: AutoSizeText(
-                              Provider.of(context).auth.getProfileName(),
+                              "Uchenna Ndukwe",
                               maxLines: 1,
                               style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 30,
-                                  fontFamily: 'Langar'
+                                  fontFamily: "Langar",
+                                  fontWeight: FontWeight.w800
                               ),
                             ),
                             subtitle: AutoSizeText(
-                              Provider.of(context).auth.getProfileEmail(),
+                              "ucj.justice@gmail.com",
                               maxLines: 1,
                               style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 20,
-                                  fontFamily: 'Langar'
+                                color: Colors.white,
+                                fontSize: 20,
+                                fontFamily: "Langar",
                               ),
                             ),
                             leading: CircleAvatar(
-                              child: Provider.of(context).auth.getProfileImage(),
+                              child: Icon(
+                                Icons.perm_identity,
+                                color: Colors.white,
+                              ),
                               radius: 40,
                             ),
                           ),
                           Divider(
                             height: 64,
                             thickness: 0.5,
-                            color: Colors.white.withOpacity(0.3),
+                            color: const Color(0xffc41a78).withOpacity(0.3),
                             indent: 32,
                             endIndent: 32,
                           ),
@@ -122,7 +126,7 @@ class _SideBarState extends State<SideBar> with SingleTickerProviderStateMixin<S
                           ),
                           MenuItem(
                             icon: Icons.person_outline,
-                            title: "My Profile",
+                            title: "My Account",
                             onTap: () {
                               onIconPressed();
                               BlocProvider.of<NavigationBloc>(context).add(NavigationEvents.MyProfileClickedEvent);
@@ -139,20 +143,20 @@ class _SideBarState extends State<SideBar> with SingleTickerProviderStateMixin<S
                           Divider(
                             height: 64,
                             thickness: 0.5,
-                            color: Colors.white.withOpacity(0.3),
+                            color: const Color(0xffc41a78).withOpacity(0.3),
                             indent: 32,
                             endIndent: 32,
                           ),
                           MenuItem(
                             icon: Icons.settings_outlined,
-                            title: "Setting",
+                            title: "Settings",
                             onTap: () {
                               onIconPressed();
                               BlocProvider.of<NavigationBloc>(context).add(NavigationEvents.SettingClickedEvent);
                             },
                           ),
                           MenuItem(
-                            icon: Icons.question_answer_outlined,
+                            icon: Icons.read_more_outlined,
                             title: "About",
                             onTap: () {
                               onIconPressed();
@@ -164,9 +168,18 @@ class _SideBarState extends State<SideBar> with SingleTickerProviderStateMixin<S
                             title: "Help",
                             onTap: () {
                               onIconPressed();
-                              BlocProvider.of<NavigationBloc>(context).add(NavigationEvents.HelpClickedEvent);
+                              BlocProvider.of<NavigationBloc>(context).add(NavigationEvents.AboutClickedEvent);
                             },
                           ),
+                          MenuItem(
+                            icon: Icons.logout,
+                            title: "Sign Out",
+                            onTap: () {
+                              setState(() {
+                                _repository.signOut();
+                              });
+                            },
+                          )
                         ],
                       ),
                     ),
@@ -184,11 +197,11 @@ class _SideBarState extends State<SideBar> with SingleTickerProviderStateMixin<S
                     child: Container(
                       width: 35,
                       height: 110,
-                      color: Color(0xff2c2b2c),
+                      color: Color(0xff222222),
                       alignment: Alignment.centerLeft,
                       child: AnimatedIcon(
                         progress: _animationController.view,
-                        icon: AnimatedIcons.menu_arrow,
+                        icon: AnimatedIcons.menu_close,
                         color: Color(0xffc41a78),
                         size: 25,
                       ),
@@ -220,7 +233,7 @@ class CustomMenuClipper extends CustomClipper<Path>{
     path.quadraticBezierTo(width + 1, height / 2 + 20, 10, height - 16);
     path.quadraticBezierTo(0, height - 8, 0, height);
     path.close();
-    
+
     return path;
   }
 
@@ -230,3 +243,4 @@ class CustomMenuClipper extends CustomClipper<Path>{
   }
 
 }
+

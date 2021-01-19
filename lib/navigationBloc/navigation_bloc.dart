@@ -1,11 +1,10 @@
-import 'package:bloc/bloc.dart';
-import 'package:flutter/material.dart';
-import 'package:motivate_gram/views/sidePage/aboutPage.dart';
-import 'package:motivate_gram/views/sidePage/chatRoomPage.dart';
-import 'package:motivate_gram/views/sidePage/helpPage.dart';
-import 'package:motivate_gram/views/sidePage/homepage.dart';
-import 'package:motivate_gram/views/sidePage/profile.dart';
-import 'package:motivate_gram/views/sidePage/settingPage.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:motivate_gram/sidePages/aboutPage.dart';
+import 'package:motivate_gram/sidePages/chatListScreen.dart';
+import 'package:motivate_gram/sidePages/helpPage.dart';
+import 'package:motivate_gram/sidePages/homepage.dart';
+import 'package:motivate_gram/sidePages/myaccount.dart';
+import 'package:motivate_gram/sidePages/settingPage.dart';
 
 enum NavigationEvents{
   HomePageClickedEvent,
@@ -30,7 +29,7 @@ class NavigationBloc extends Bloc<NavigationEvents, NavigationStates>{
         break;
 
       case NavigationEvents.MyProfileClickedEvent:
-        yield ProfilePage();
+        yield MyAccount();
         break;
 
       case NavigationEvents.AboutClickedEvent:
@@ -38,7 +37,7 @@ class NavigationBloc extends Bloc<NavigationEvents, NavigationStates>{
         break;
 
       case NavigationEvents.ChatRoomClickedEvent:
-        yield ChatRoomPage();
+        yield ChatScreen();
         break;
 
       case NavigationEvents.SettingClickedEvent:
