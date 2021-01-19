@@ -3,6 +3,7 @@ import 'package:motivate_gram/resouces/firebase_repository.dart';
 import 'package:motivate_gram/utils/universal_variables.dart';
 import 'package:motivate_gram/utils/utilities.dart';
 import 'package:motivate_gram/widgets/appbar.dart';
+import 'package:motivate_gram/widgets/custom_title.dart';
 
 class ChatListScreen extends StatefulWidget {
   @override
@@ -83,7 +84,56 @@ class _ChatListContainerState extends State<ChatListContainer> {
         padding: EdgeInsets.all(10),
         itemCount: 2,
         itemBuilder: (context, index) {
-          return CustomTile();
+          return CustomTile(
+            mini: false,
+            onTap: () {},
+            title: Text(
+              "Uchenna Ndukwe",
+              style: TextStyle(
+                color: Colors.white,
+                fontFamily: "Langar",
+                fontSize: 19
+              ),
+            ),
+            subtitle: Text(
+              "Hello",
+              style: TextStyle(
+                  color: Colors.grey,
+                  fontFamily: "Langar",
+                  fontSize: 14
+              ),
+            ),
+            leading: Container(
+              constraints: BoxConstraints(
+                maxHeight: 60,
+                maxWidth: 60
+              ),
+              child: Stack(
+                children: [
+                  CircleAvatar(
+                    maxRadius: 30,
+                    backgroundColor: Colors.grey,
+                    backgroundImage: NetworkImage("https://images.unsplash.com/photo-1586083702768-190ae093d34d?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=395&q=80"),
+                  ),
+                  Align(
+                    alignment: Alignment.bottomRight,
+                    child: Container(
+                      height: 20,
+                      width: 20,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: UniversalVariables.onlineDotColor,
+                        border: Border.all(
+                          color: Colors.black,
+                          width: 2
+                        )
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            ),
+          );
         },
       ),
     );
