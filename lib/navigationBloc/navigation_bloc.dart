@@ -37,7 +37,7 @@ class NavigationBloc extends Bloc<NavigationEvents, NavigationStates>{
         break;
 
       case NavigationEvents.ChatRoomClickedEvent:
-        yield ChatScreen();
+        yield ChatScreenPage();
         break;
 
       case NavigationEvents.SettingClickedEvent:

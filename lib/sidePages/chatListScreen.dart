@@ -4,12 +4,12 @@ import 'package:motivate_gram/navigationBloc/navigation_bloc.dart';
 import 'package:motivate_gram/screens/pageview/chat_list_screen.dart';
 import 'package:motivate_gram/utils/universal_variables.dart';
 
-class ChatScreen extends StatefulWidget with NavigationStates{
+class ChatScreenPage extends StatefulWidget with NavigationStates{
   @override
-  _ChatScreenState createState() => _ChatScreenState();
+  _ChatScreenPageState createState() => _ChatScreenPageState();
 }
 
-class _ChatScreenState extends State<ChatScreen> {
+class _ChatScreenPageState extends State<ChatScreenPage> {
   PageController pageController;
   int _page = 0;
 

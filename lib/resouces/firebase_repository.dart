@@ -1,5 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:motivate_gram/models/user_list.dart';
 import 'package:motivate_gram/resouces/firebaseMethods.dart';
 
 class FirebaseRepository {
@@ -16,4 +16,7 @@ class FirebaseRepository {
 
   /// Responsible for signOut
   Future<void> signOut() => _firebaseMethods.signOut();
+
+  Future<List<UserModel>> fetchAllUser(User user) =>
+      _firebaseMethods.fetchAllUser(user);
 }

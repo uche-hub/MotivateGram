@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:motivate_gram/resouces/firebase_repository.dart';
 import 'package:motivate_gram/screens/login_screen.dart';
+import 'package:motivate_gram/screens/search_screen.dart';
 import 'package:motivate_gram/sidePages/homepage.dart';
 import 'package:motivate_gram/sidebar/sidebar_layout.dart';
 
@@ -19,6 +20,10 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
         title: 'MotivateGram',
         debugShowCheckedModeBanner: false,
+        initialRoute: '/',
+        routes: {
+          '/search_screen': (context) => SearchScreen()
+        },
         theme: ThemeData.dark(),
         home: FutureBuilder(
           future: _repository.getCurrentUser(),
