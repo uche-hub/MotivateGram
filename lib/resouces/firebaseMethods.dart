@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:motivate_gram/models/message.dart';
 import 'package:motivate_gram/models/user_list.dart';
 import 'package:motivate_gram/utils/utilities.dart';
 
@@ -117,5 +119,21 @@ class FirebaseMethods {
       }
     }
     return userList;
+  }
+
+  Future<void> addMessageToDb(Message message, UserModel sender, UserModel receiver) async{
+     var map = message.toMap();
+
+     await firestore
+     .collection("Messages")
+     .doc(message.senderId)
+     .collection(message.receiverId)
+     .add(map);
+
+     return await firestore
+         .collection("Messages")
+         .doc(message.receiverId)
+         .collection(message.senderId)
+         .add(map);
   }
 }

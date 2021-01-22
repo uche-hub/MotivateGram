@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:motivate_gram/models/message.dart';
 import 'package:motivate_gram/models/user_list.dart';
 import 'package:motivate_gram/resouces/firebaseMethods.dart';
 
@@ -19,4 +20,7 @@ class FirebaseRepository {
 
   Future<List<UserModel>> fetchAllUser(User user) =>
       _firebaseMethods.fetchAllUser(user);
+
+  Future<void> addMessageToDb(Message message, UserModel sender, UserModel receiver) =>
+      _firebaseMethods.addMessageToDb(message, sender, receiver);
 }

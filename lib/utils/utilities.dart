@@ -1,6 +1,6 @@
 class Utils {
   static String getUsername(String email) {
-    return "live:${email.split('@')[0]}";
+    return "${email.split('@')[0]}";
   }
 
   static String getInitials(String name){

@@ -1,5 +1,10 @@
+import 'package:auto_size_text/auto_size_text.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:motivate_gram/models/message.dart';
 import 'package:motivate_gram/models/user_list.dart';
+import 'package:motivate_gram/resouces/firebase_repository.dart';
 import 'package:motivate_gram/utils/universal_variables.dart';
 import 'package:motivate_gram/widgets/appbar.dart';
 import 'package:motivate_gram/widgets/custom_title.dart';
@@ -16,7 +21,30 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   TextEditingController textEditingController = TextEditingController();
 
+  FirebaseRepository _repository = FirebaseRepository();
+
+  UserModel sender;
+
+  String _currentUserId;
+
   bool isWriting = false;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _repository.getCurrentUser().then((user) {
+      _currentUserId = user.uid;
+
+      setState(() {
+        sender = UserModel(
+          uid: user.uid,
+          name: user.displayName,
+          profilePhoto: user.photoURL
+        );
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,31 +62,47 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   Widget meassageList() {
-    return ListView.builder(
-      padding: EdgeInsets.all(10),
-      itemCount: 6,
-      itemBuilder: (context, index) {
-        return chatMessageItem();
+    return StreamBuilder(
+      stream: FirebaseFirestore.instance
+        .collection("Messages")
+        .doc(_currentUserId)
+        .collection(widget.receiver.uid)
+        .orderBy("timeStamp", descending: true)
+        .snapshots(),
+
+      builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+        if(snapshot.data == null) {
+          return Center(child: CircularProgressIndicator(),);
+        }
+        return ListView.builder(
+          padding: EdgeInsets.all(10),
+          itemCount: snapshot.data.docs.length,
+          itemBuilder: (context, index) {
+            return chatMessageItem(snapshot.data.docs[index]);
+          },
+        );
       },
     );
   }
 
-  Widget chatMessageItem() {
+  Widget chatMessageItem(DocumentSnapshot snapshot) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 15),
       child: Container(
-        child: senderLayout(),
+        alignment: snapshot['senderId'] == _currentUserId
+        ? Alignment.centerRight : Alignment.centerLeft,
+        child: snapshot['senderId'] == _currentUserId ? senderLayout(snapshot) : receiverLayout(snapshot),
       ),
     );
   }
 
-  Widget senderLayout() {
+  Widget senderLayout(DocumentSnapshot snapshot) {
     Radius messageRadius = Radius.circular(10);
 
     return Container(
       margin: EdgeInsets.only(top: 12),
       constraints: BoxConstraints(
-        maxWidth: MediaQuery.of(context).size.width * 0.65
+        maxWidth: MediaQuery.of(context).size.width * 0.65,
       ),
       decoration: BoxDecoration(
         color: UniversalVariables.pinkColor,
@@ -70,18 +114,22 @@ class _ChatScreenState extends State<ChatScreen> {
       ),
       child: Padding(
         padding: EdgeInsets.all(10),
-        child: Text(
-          "Hello",
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 16
-          ),
-        ),
+        child: getMessage(snapshot),
       ),
     );
   }
 
-  Widget receiverLayout() {
+  getMessage(DocumentSnapshot snapshot) {
+    return Text(
+      snapshot['message'],
+      style: TextStyle(
+        color: Colors.white,
+        fontSize: 16.0
+      ),
+    );
+  }
+
+  Widget receiverLayout(DocumentSnapshot snapshot) {
     Radius messageRadius = Radius.circular(10);
 
     return Container(
@@ -99,13 +147,7 @@ class _ChatScreenState extends State<ChatScreen> {
       ),
       child: Padding(
         padding: EdgeInsets.all(10),
-        child: Text(
-          "Hello",
-          style: TextStyle(
-              color: Colors.white,
-              fontSize: 16
-          ),
-        ),
+        child: getMessage(snapshot),
       ),
     );
   }
@@ -237,7 +279,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 fillColor: UniversalVariables.separatorColor,
                 suffixIcon: GestureDetector(
                   onTap: (){},
-                  child: Icon(Icons.emoji_emotions),
+                  child: Icon(Icons.emoji_emotions_outlined, color: UniversalVariables.pinkColor,),
                 )
               ),
             ),
@@ -255,14 +297,33 @@ class _ChatScreenState extends State<ChatScreen> {
             child: IconButton(
               icon: Icon(
                 Icons.send,
+                color: Colors.white,
                 size: 25,
               ),
-              onPressed: () => {},
+              onPressed: () => sendMessage(),
             ),
           ) : Container()
         ],
       ),
     );
+  }
+
+  sendMessage(){
+    var text = textEditingController.text;
+
+    Message _message = Message(
+      receiverId: widget.receiver.uid,
+      senderId: sender.uid,
+      message: text,
+      timeStamp: FieldValue.serverTimestamp(),
+      type: 'text'
+    );
+
+    setState(() {
+      isWriting = false;
+    });
+
+    _repository.addMessageToDb(_message, sender, widget.receiver);
   }
 
   CustomAppBar customAppBar(context) {
@@ -277,8 +338,9 @@ class _ChatScreenState extends State<ChatScreen> {
         },
       ),
       centerTitle: false,
-      title: Text(
+      title: AutoSizeText(
         widget.receiver.name,
+        maxLines: 1,
       ),
       actions: <Widget>[
         IconButton(

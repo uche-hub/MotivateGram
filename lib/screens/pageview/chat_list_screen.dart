@@ -15,7 +15,7 @@ final FirebaseRepository _repository = FirebaseRepository();
 
 class _ChatListScreenState extends State<ChatListScreen> {
   String currentUserId;
-  String initials;
+  String initials = "";
 
   @override
   void initState() {
@@ -120,13 +120,13 @@ class _ChatListContainerState extends State<ChatListContainer> {
                   Align(
                     alignment: Alignment.bottomRight,
                     child: Container(
-                      height: 20,
-                      width: 20,
+                      height: 13,
+                      width: 13,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         color: UniversalVariables.onlineDotColor,
                         border: Border.all(
-                          color: Colors.black,
+                          color: Colors.greenAccent,
                           width: 2
                         )
                       ),
