@@ -9,6 +9,10 @@ class FirebaseMethods {
   GoogleSignIn _googleSignIn = GoogleSignIn();
   static final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
+  String name;
+  String email;
+  String imageUrl;
+
   /// User Class
   UserModel userModel = UserModel();
 
@@ -30,7 +34,39 @@ class FirebaseMethods {
     );
 
     User user = (await _auth.signInWithCredential(credential)).user;
+
+    if(user != null){
+      assert(user.email != null);
+      assert(user.displayName != null);
+      assert(user.photoURL != null);
+
+      name = user.displayName;
+      email = user.email;
+      imageUrl = user.photoURL;
+
+      print(name);
+      print(email);
+    }
+
     return user;
+  }
+
+  getProfileName() {
+    if(_auth.currentUser.displayName != null) {
+      return _auth.currentUser.displayName;
+    }
+  }
+
+  getProfileEmail() {
+    if(_auth.currentUser.email != null) {
+      return _auth.currentUser.email;
+    }
+  }
+
+  getProfileImage() {
+    if(_auth.currentUser.photoURL != null) {
+      return _auth.currentUser.photoURL;
+    }
   }
 
   Future<bool> authenticateUser(User user) async {

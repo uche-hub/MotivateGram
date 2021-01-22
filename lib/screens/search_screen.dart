@@ -15,7 +15,7 @@ class SearchScreen extends StatefulWidget {
 class _SearchScreenState extends State<SearchScreen> {
   FirebaseRepository _repository = FirebaseRepository();
 
-  List<UserModel> userList;
+  List<UserModel> userList = <UserModel>[];
   String query = "";
   TextEditingController searchController = TextEditingController();
   

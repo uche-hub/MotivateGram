@@ -4,6 +4,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:motivate_gram/navigationBloc/navigation_bloc.dart';
+import 'package:motivate_gram/resouces/firebaseMethods.dart';
 import 'package:motivate_gram/resouces/firebase_repository.dart';
 import 'package:motivate_gram/sidebar/meun_items.dart';
 import 'package:rxdart/rxdart.dart';
@@ -21,6 +22,8 @@ class _SideBarState extends State<SideBar> with SingleTickerProviderStateMixin<S
   final _animationDuration = const Duration(milliseconds: 500);
 
   FirebaseRepository _repository = FirebaseRepository();
+
+  FirebaseMethods methods = FirebaseMethods();
 
   @override
   void initState() {
@@ -83,7 +86,7 @@ class _SideBarState extends State<SideBar> with SingleTickerProviderStateMixin<S
                           ),
                           ListTile(
                             title: AutoSizeText(
-                              "Uchenna Ndukwe",
+                              methods.getProfileName(),
                               maxLines: 1,
                               style: TextStyle(
                                   color: Colors.white,
@@ -93,7 +96,7 @@ class _SideBarState extends State<SideBar> with SingleTickerProviderStateMixin<S
                               ),
                             ),
                             subtitle: AutoSizeText(
-                              "ucj.justice@gmail.com",
+                              methods.getProfileEmail(),
                               maxLines: 1,
                               style: TextStyle(
                                 color: Colors.white,
@@ -102,9 +105,9 @@ class _SideBarState extends State<SideBar> with SingleTickerProviderStateMixin<S
                               ),
                             ),
                             leading: CircleAvatar(
-                              child: Icon(
-                                Icons.perm_identity,
-                                color: Colors.white,
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(50.0),
+                                child: Image.network(methods.getProfileImage()),
                               ),
                               radius: 40,
                             ),
