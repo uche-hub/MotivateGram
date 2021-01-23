@@ -2,6 +2,8 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:motivate_gram/constants/String.dart';
 import 'package:motivate_gram/models/message.dart';
 import 'package:motivate_gram/models/user_list.dart';
 import 'package:motivate_gram/resouces/firebase_repository.dart';
@@ -22,6 +24,8 @@ class _ChatScreenState extends State<ChatScreen> {
   TextEditingController textEditingController = TextEditingController();
 
   FirebaseRepository _repository = FirebaseRepository();
+
+  ScrollController _listScrollController = ScrollController();
 
   UserModel sender;
 
@@ -64,19 +68,30 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget meassageList() {
     return StreamBuilder(
       stream: FirebaseFirestore.instance
-        .collection("Messages")
+        .collection(MESSAGES_COLLECTION)
         .doc(_currentUserId)
         .collection(widget.receiver.uid)
-        .orderBy("timeStamp", descending: true)
+        .orderBy(TIMESTAMP_FIELD, descending: true)
         .snapshots(),
 
       builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
         if(snapshot.data == null) {
           return Center(child: CircularProgressIndicator(),);
         }
+
+        // SchedulerBinding.instance.addPostFrameCallback((_) {
+        //   _listScrollController.animateTo(
+        //     _listScrollController.position.minScrollExtent,
+        //     duration: Duration(milliseconds: 250),
+        //     curve: Curves.easeInOut
+        //   );
+        // });
+
         return ListView.builder(
           padding: EdgeInsets.all(10),
           itemCount: snapshot.data.docs.length,
+          reverse: true,
+          controller: _listScrollController,
           itemBuilder: (context, index) {
             return chatMessageItem(snapshot.data.docs[index]);
           },
@@ -86,17 +101,20 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   Widget chatMessageItem(DocumentSnapshot snapshot) {
+
+    Message _message = Message.fromMap(snapshot.data());
+
     return Container(
       margin: EdgeInsets.symmetric(vertical: 15),
       child: Container(
-        alignment: snapshot['senderId'] == _currentUserId
+        alignment: _message.senderId == _currentUserId
         ? Alignment.centerRight : Alignment.centerLeft,
-        child: snapshot['senderId'] == _currentUserId ? senderLayout(snapshot) : receiverLayout(snapshot),
+        child: _message.senderId == _currentUserId ? senderLayout(_message) : receiverLayout(_message),
       ),
     );
   }
 
-  Widget senderLayout(DocumentSnapshot snapshot) {
+  Widget senderLayout(Message message) {
     Radius messageRadius = Radius.circular(10);
 
     return Container(
@@ -114,14 +132,14 @@ class _ChatScreenState extends State<ChatScreen> {
       ),
       child: Padding(
         padding: EdgeInsets.all(10),
-        child: getMessage(snapshot),
+        child: getMessage(message),
       ),
     );
   }
 
-  getMessage(DocumentSnapshot snapshot) {
+  getMessage(Message message) {
     return Text(
-      snapshot['message'],
+      message.message,
       style: TextStyle(
         color: Colors.white,
         fontSize: 16.0
@@ -129,7 +147,7 @@ class _ChatScreenState extends State<ChatScreen> {
     );
   }
 
-  Widget receiverLayout(DocumentSnapshot snapshot) {
+  Widget receiverLayout(Message message) {
     Radius messageRadius = Radius.circular(10);
 
     return Container(
@@ -147,7 +165,7 @@ class _ChatScreenState extends State<ChatScreen> {
       ),
       child: Padding(
         padding: EdgeInsets.all(10),
-        child: getMessage(snapshot),
+        child: getMessage(message),
       ),
     );
   }
@@ -315,13 +333,15 @@ class _ChatScreenState extends State<ChatScreen> {
       receiverId: widget.receiver.uid,
       senderId: sender.uid,
       message: text,
-      timeStamp: FieldValue.serverTimestamp(),
+      timeStamp: Timestamp.now(),
       type: 'text'
     );
 
     setState(() {
       isWriting = false;
     });
+
+    textEditingController.text = "";
 
     _repository.addMessageToDb(_message, sender, widget.receiver);
   }

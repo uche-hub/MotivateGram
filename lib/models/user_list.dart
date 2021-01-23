@@ -29,6 +29,7 @@ class UserModel {
     return data;
   }
 
+  /// Named Constructor
   UserModel.fromMap(Map<String, dynamic> mapData) {
     this.uid = mapData['uid'];
     this.name = mapData['name'];
