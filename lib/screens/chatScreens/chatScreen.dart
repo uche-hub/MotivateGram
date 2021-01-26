@@ -1,16 +1,23 @@
+import 'dart:io';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:emoji_picker/emoji_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:motivate_gram/constants/String.dart';
+import 'package:motivate_gram/enum/view_state.dart';
 import 'package:motivate_gram/models/message.dart';
 import 'package:motivate_gram/models/user_list.dart';
+import 'package:motivate_gram/provider/image_upload_provider.dart';
 import 'package:motivate_gram/resouces/firebase_repository.dart';
+import 'package:motivate_gram/screens/chatScreens/widget/cached_image.dart';
 import 'package:motivate_gram/utils/universal_variables.dart';
+import 'package:motivate_gram/utils/utilities.dart';
 import 'package:motivate_gram/widgets/appbar.dart';
 import 'package:motivate_gram/widgets/custom_title.dart';
+import 'package:provider/provider.dart';
 
 class ChatScreen extends StatefulWidget {
  final UserModel receiver;
@@ -27,6 +34,8 @@ class _ChatScreenState extends State<ChatScreen> {
   FirebaseRepository _repository = FirebaseRepository();
 
   ScrollController _listScrollController = ScrollController();
+
+  ImageUploadProvider _imageUploadProvider;
 
   UserModel sender;
 
@@ -72,6 +81,9 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+    _imageUploadProvider = Provider.of<ImageUploadProvider>(context);
+
     return Scaffold(
       appBar: customAppBar(context),
       body: Column(
@@ -79,6 +91,12 @@ class _ChatScreenState extends State<ChatScreen> {
           Flexible(
             child: meassageList(),
           ),
+          _imageUploadProvider.getViewState == ViewState.LOADING
+          ? Container(
+            alignment: Alignment.centerRight,
+            margin: EdgeInsets.only(right: 15),
+              child: CircularProgressIndicator())
+          : Container(),
           chatControls(),
           showEmojiPicker ? Container(child: emojiContainer()) : Container()
         ],
@@ -176,14 +194,16 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   getMessage(Message message) {
-    return Text(
+
+    return message.type != MESSAGE_TYPE_IMAGE ?
+    Text(
       message.message,
       style: TextStyle(
         color: Colors.white,
         fontFamily: "Langar",
         fontSize: 16.0
       ),
-    );
+    ) : message.photoUrl != null ? CachedImage(url: message.photoUrl) : Text("Image Not Uploading");
   }
 
   Widget receiverLayout(Message message) {
@@ -248,9 +268,13 @@ class _ChatScreenState extends State<ChatScreen> {
               child: ListView(
                 children: [
                   ModalTile(
-                    title: "Media",
-                    subtitle: "Share Photos and Videos",
-                    icon: Icons.image,
+                      title: "Media",
+                      subtitle: "Share Photos and Videos",
+                      icon: Icons.image,
+                      onTap: () {
+                        pickGallery(source: ImageSource.gallery);
+                        Navigator.pop(context);
+                      }
                   ),
                   ModalTile(
                     title: "File",
@@ -291,6 +315,16 @@ class _ChatScreenState extends State<ChatScreen> {
       setState(() {
         isWriting = val;
       });
+    }
+
+    pickImage({@required ImageSource source}) async{
+      File selectedImage = await Utils.pickImages(source: source);
+      _repository.uploadImage(
+        image: selectedImage,
+        receiverId: widget.receiver.uid,
+        senderId: _currentUserId,
+        imageProvider: _imageUploadProvider
+      );
     }
 
     return Container(
@@ -359,11 +393,10 @@ class _ChatScreenState extends State<ChatScreen> {
               ],
             ),
           ),
-          isWriting ? Container() : Padding(
-            padding: EdgeInsets.symmetric(horizontal: 10),
-            child: Icon(Icons.record_voice_over_outlined, color: UniversalVariables.pinkColor,),
+          isWriting ? Container() : GestureDetector(
+            onTap: () => pickImage(source: ImageSource.camera),
+            child: Icon(Icons.camera_alt, color: UniversalVariables.pinkColor,),
           ),
-          isWriting ? Container() : Icon(Icons.camera_alt, color: UniversalVariables.pinkColor,),
           isWriting ? Container(margin: EdgeInsets.only(left: 8),
             decoration: BoxDecoration(
               color: UniversalVariables.pinkColor,
@@ -440,17 +473,29 @@ class _ChatScreenState extends State<ChatScreen> {
       ],
     );
   }
+
+  pickGallery({ImageSource source}) async{
+    File selectedImage = await Utils.pickImages(source: source);
+    _repository.uploadImage(
+        image: selectedImage,
+        receiverId: widget.receiver.uid,
+        senderId: _currentUserId,
+        imageProvider: _imageUploadProvider
+    );
+  }
 }
 
 class ModalTile extends StatelessWidget {
   final String title;
   final String subtitle;
   final IconData icon;
+  final Function onTap;
 
   const ModalTile({
     @required this.title,
     @required this.subtitle,
-    @required this.icon
+    @required this.icon,
+    this.onTap
 });
 
   @override
@@ -459,6 +504,7 @@ class ModalTile extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: 15),
       child: CustomTile(
         mini: false,
+        onTap: onTap,
         leading: Container(
           margin: EdgeInsets.only(right: 10),
           decoration: BoxDecoration(
