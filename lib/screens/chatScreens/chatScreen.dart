@@ -13,6 +13,7 @@ import 'package:motivate_gram/models/user_list.dart';
 import 'package:motivate_gram/provider/image_upload_provider.dart';
 import 'package:motivate_gram/resouces/firebase_repository.dart';
 import 'package:motivate_gram/screens/chatScreens/widget/cached_image.dart';
+import 'package:motivate_gram/utils/call_utilities.dart';
 import 'package:motivate_gram/utils/universal_variables.dart';
 import 'package:motivate_gram/utils/utilities.dart';
 import 'package:motivate_gram/widgets/appbar.dart';
@@ -461,7 +462,11 @@ class _ChatScreenState extends State<ChatScreen> {
             Icons.video_call,
             color: UniversalVariables.pinkColor,
           ),
-          onPressed: (){},
+          onPressed: () => CallUtils.dial(
+            from: sender,
+            to: widget.receiver,
+            context: context
+          ),
         ),
         IconButton(
           icon: Icon(

@@ -16,6 +16,10 @@ class FirebaseMethods {
   GoogleSignIn _googleSignIn = GoogleSignIn();
   static final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
+  static final CollectionReference _userCollection = _firestore.collection(USERS_COLLECTION);
+
+  static final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
   Reference _storageReference;
 
   String name;
@@ -30,6 +34,12 @@ class FirebaseMethods {
 
     currentUser = await _auth.currentUser;
     return currentUser;
+  }
+
+  Future<UserModel> getUserDetails() async {
+    User currentUser = await getCurrentUser();
+    DocumentSnapshot documentSnapshot = await _userCollection.doc(currentUser.uid).get();
+    return UserModel.fromMap(documentSnapshot.data());
   }
 
   Future<User> signIn() async {
